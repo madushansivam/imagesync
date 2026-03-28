@@ -552,6 +552,127 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   padding:20px;animation:fadeUp .25s ease
 }
 
+/* ══════════ BATCH ══════════ */
+.find-action-row{display:flex;gap:8px}
+.find-action-row .find-btn{flex:1}
+.batch-run-btn{
+  flex:0 0 auto;padding:12px 18px;font-size:14px;
+  background:var(--surface-2);color:var(--text-2);border:1px solid var(--border);
+  border-radius:var(--r);font-weight:600;font-family:'Outfit',sans-serif;
+  cursor:pointer;display:flex;align-items:center;gap:7px;
+  transition:var(--t) var(--ease);white-space:nowrap;line-height:1
+}
+.batch-run-btn:not(:disabled):hover{background:var(--surface-3);color:var(--text);border-color:var(--border-2)}
+.batch-run-btn:disabled{opacity:.35;cursor:not-allowed}
+.batch-run-btn.active{
+  background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.05));
+  color:var(--accent);border-color:rgba(245,158,11,.35)
+}
+
+/* Batch modal */
+.batch-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);
+  z-index:600;backdrop-filter:blur(12px);
+  flex-direction:column
+}
+.batch-overlay.active{display:flex;animation:fadeIn .2s ease}
+.batch-shell{
+  display:flex;flex-direction:column;height:100vh;
+  max-width:1100px;margin:0 auto;width:100%;padding:0
+}
+.batch-head{
+  height:56px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;border-bottom:1px solid var(--border);
+  background:var(--surface);flex-shrink:0
+}
+.batch-head-left{display:flex;align-items:center;gap:12px}
+.batch-head-title{font-size:15px;font-weight:700;color:var(--text)}
+.batch-progress-wrap{flex:1;max-width:300px;display:flex;flex-direction:column;gap:4px}
+.batch-progress-bar{height:3px;background:var(--surface-3);border-radius:2px;overflow:hidden}
+.batch-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;transition:width .15s ease;border-radius:2px}
+.batch-progress-lbl{font-size:10px;color:var(--text-3);font-family:'JetBrains Mono',monospace}
+.batch-head-right{display:flex;align-items:center;gap:8px}
+
+.batch-summary-bar{
+  display:flex;align-items:center;gap:16px;padding:10px 24px;
+  background:var(--surface-2);border-bottom:1px solid var(--border);
+  flex-shrink:0;flex-wrap:wrap
+}
+.batch-stat{display:flex;align-items:center;gap:6px;font-size:11.5px}
+.batch-stat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.batch-stat-num{font-weight:700;font-family:'JetBrains Mono',monospace}
+.batch-stat-lbl{color:var(--text-3)}
+
+.batch-controls{
+  display:flex;align-items:center;gap:8px;padding:10px 24px;
+  background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0
+}
+.batch-select-all{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;font-size:12px;color:var(--text-2)}
+.batch-select-all input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
+.batch-filter{display:flex;gap:4px;margin-left:auto}
+.batch-filter-btn{
+  padding:4px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text-3);transition:var(--t) var(--ease)
+}
+.batch-filter-btn.active{background:var(--accent-dim);border-color:rgba(245,158,11,.35);color:var(--accent)}
+
+.batch-body{flex:1;overflow-y:auto;background:var(--bg)}
+.batch-body::-webkit-scrollbar{width:5px}
+.batch-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.batch-table{width:100%;border-collapse:collapse}
+.batch-table thead{position:sticky;top:0;z-index:5}
+.batch-table thead tr{background:var(--surface-2)}
+.batch-table th{
+  padding:9px 14px;text-align:left;font-size:9.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);
+  border-bottom:1px solid var(--border)
+}
+.batch-table th:first-child{width:38px;text-align:center}
+.batch-row{border-bottom:1px solid var(--border);transition:background .1s}
+.batch-row:hover td{background:var(--surface)}
+.batch-row.no-match td{opacity:.6}
+.batch-row.no-match:hover td{background:rgba(248,113,113,.04)}
+.batch-row.selected td{background:rgba(245,158,11,.04)}
+.batch-table td{padding:10px 14px;vertical-align:middle}
+.batch-table td:first-child{text-align:center;width:38px}
+.batch-cb{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
+.batch-thumb-cell{display:flex;align-items:center;gap:8px}
+.batch-thumb{
+  width:44px;height:44px;border-radius:var(--r);object-fit:cover;
+  border:1px solid var(--border);background:var(--surface-2);flex-shrink:0;cursor:zoom-in
+}
+.batch-thumb:hover{border-color:var(--accent)}
+.batch-fname{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px}
+.batch-arrow{color:var(--accent);font-size:18px;font-weight:700;padding:0 4px;flex-shrink:0}
+.batch-no-match-tag{
+  font-size:10px;font-weight:700;color:var(--danger);
+  background:var(--danger-bg);padding:3px 8px;border-radius:var(--r-pill);
+  border:1px solid rgba(248,113,113,.2);white-space:nowrap
+}
+.batch-id-input{
+  width:100%;padding:6px 10px;background:var(--surface-2);
+  border:1px solid var(--border);border-radius:var(--r);color:var(--text);
+  font-size:11px;font-family:'JetBrains Mono',monospace;
+  transition:var(--t) var(--ease);min-width:130px
+}
+.batch-id-input:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(245,158,11,.12);background:var(--surface-3)
+}
+.batch-id-input:disabled{opacity:.4;cursor:not-allowed}
+.batch-status-icon{display:flex;align-items:center;gap:5px;font-size:11px;white-space:nowrap}
+
+.batch-foot{
+  padding:14px 24px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);flex-shrink:0;gap:12px;flex-wrap:wrap
+}
+.batch-foot-left{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3)}
+.batch-foot-right{display:flex;align-items:center;gap:8px}
+
 @media(max-width:880px){:root{--sidebar-w:200px}}
 @media(max-width:640px){
   body{overflow:auto}
@@ -737,12 +858,22 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 
       <!-- Find button -->
       <div class="find-action">
-        <button class="btn btn-primary find-btn" id="findBtn" onclick="findSimilarImages()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          Find Similar Images
-        </button>
+        <div class="find-action-row">
+          <button class="btn btn-primary find-btn" id="findBtn" onclick="findSimilarImages()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Find Similar
+          </button>
+          <button class="batch-run-btn" id="batchBtn" onclick="runBatchSearch()" disabled title="Add multiple query images to enable batch mode">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            Run Batch
+            <span id="batchCountBadge" class="hidden" style="background:var(--accent);color:#000;border-radius:var(--r-pill);font-size:10px;padding:1px 7px;font-weight:800;margin-left:2px"></span>
+          </button>
+        </div>
       </div>
 
       <div class="divider"></div>
@@ -938,6 +1069,152 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   </div>
 </div>
 
+<!-- ══════════════ BATCH MODAL ══════════════ -->
+<div class="batch-overlay" id="batchOverlay">
+  <div class="batch-shell">
+    <div class="batch-head">
+      <div class="batch-head-left">
+        <span class="batch-head-title">Batch Search</span>
+        <div class="batch-progress-wrap" id="batchProgressWrap">
+          <div class="batch-progress-bar"><div class="batch-progress-fill" id="batchProgressFill"></div></div>
+          <div class="batch-progress-lbl" id="batchProgressLbl">Processing…</div>
+        </div>
+      </div>
+      <div class="batch-head-right">
+        <button class="btn btn-ghost btn-sm" onclick="exportBatchCSV()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export CSV
+        </button>
+        <button class="btn-icon" onclick="closeBatch()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="batch-summary-bar" id="batchSummaryBar">
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--accent)"></div>
+        <span class="batch-stat-num" id="bsTotal">0</span>
+        <span class="batch-stat-lbl">total</span>
+      </div>
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--success)"></div>
+        <span class="batch-stat-num" id="bsMatched">0</span>
+        <span class="batch-stat-lbl">matched</span>
+      </div>
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--danger)"></div>
+        <span class="batch-stat-num" id="bsNone">0</span>
+        <span class="batch-stat-lbl">no match</span>
+      </div>
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--text-3)"></div>
+        <span class="batch-stat-num" id="bsSelected">0</span>
+        <span class="batch-stat-lbl">selected</span>
+      </div>
+    </div>
+
+    <div class="batch-controls">
+      <label class="batch-select-all">
+        <input type="checkbox" id="batchSelectAll" onchange="toggleBatchSelectAll(this.checked)">
+        Select all matched
+      </label>
+      <div class="batch-filter">
+        <button class="batch-filter-btn active" id="bfAll" onclick="setBatchFilter('all')">All</button>
+        <button class="batch-filter-btn" id="bfMatched" onclick="setBatchFilter('matched')">Matched</button>
+        <button class="batch-filter-btn" id="bfNone" onclick="setBatchFilter('none')">No Match</button>
+      </div>
+    </div>
+
+    <div class="batch-body">
+      <table class="batch-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Query Image</th>
+            <th></th>
+            <th>Best Match</th>
+            <th>Score</th>
+            <th>Output Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="batchTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="batch-foot">
+      <div class="batch-foot-left">
+        <span id="batchFootNote">Select rows and pick a folder to save.</span>
+      </div>
+      <div class="batch-foot-right">
+        <button class="btn btn-ghost" onclick="closeBatch()">Close</button>
+        <button class="btn btn-success" id="batchSaveBtn" onclick="openBatchFolderModal()" disabled>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+          </svg>
+          Save Selected
+          <span id="batchSaveCount" class="hidden" style="background:rgba(0,0,0,.2);border-radius:var(--r-pill);padding:1px 7px;font-size:11px"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Batch folder modal (reuses folder logic) -->
+<div class="overlay" id="modalBatchFolder">
+  <div class="modal" style="width:440px">
+    <div class="modal-head">
+      <span class="modal-title">Save Batch Files</span>
+      <button class="btn-icon" onclick="closeBatchFolder()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="batchFsWarn" class="notice notice-warn hidden">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        File System Access API not supported — files will download individually.
+      </div>
+      <label class="field-label" style="margin-bottom:10px">Output Folder</label>
+      <div class="folder-pick-box" id="batchFolderPickBox" onclick="pickBatchFolder()">
+        <div class="folder-pick-icon" id="batchFolderPickIcon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+            <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+          </svg>
+        </div>
+        <div class="folder-pick-name" id="batchFolderPickName">Select Output Folder</div>
+        <div class="folder-pick-sub" id="batchFolderPickSub">Click to choose where renamed files will be saved</div>
+      </div>
+      <div id="batchSaveProgress" class="hidden">
+        <div class="batch-progress-bar" style="margin-bottom:6px"><div class="batch-progress-fill" id="batchSaveFill"></div></div>
+        <div class="batch-progress-lbl" id="batchSaveLbl" style="text-align:center"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeBatchFolder()">Cancel</button>
+      <button class="btn btn-success" id="batchFolderSaveBtn" onclick="executeBatchSave()" disabled>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+        </svg>
+        Save All
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ LIGHTBOX ══════════════ -->
 <div id="lightbox" onclick="closeLightbox()">
   <img id="lightboxImg" alt="Preview">
@@ -949,14 +1226,34 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 
 <script>
 /* ════════════════════════════════════════════
-   ImageSync — Premium Edition
-   All logic preserved, UI fully redesigned.
+   ImageSync — Performance-Fixed Edition
+   Key fixes vs original:
+   1. URL.createObjectURL replaces ALL FileReader.readAsDataURL calls
+      → Synchronous, no base64 overhead, instant thumbnails
+   2. File objects used directly (File IS-A Blob, no arrayBuffer copy)
+   3. DCT cosine table precomputed once at startup (~65k cos() calls → 0)
+   4. getSrc() memoizes object URLs per library entry (no duplicate reads)
+   5. findSimilarImages() yields every 100 items (no UI freeze on big libs)
+   6. restoreLibraryFromDB() batches in 30s with browser yields
+   7. showMultiResult() uses cached srcs, no double blob reading
 ════════════════════════════════════════════ */
+
+/* ── PERF: Precompute DCT cosine table once ── */
+const _PHASH = (() => {
+  const SIZE = 32, DCTSIZE = 8;
+  const cos = [];
+  for (let u = 0; u < DCTSIZE; u++) {
+    cos[u] = new Float32Array(SIZE);
+    for (let x = 0; x < SIZE; x++)
+      cos[u][x] = Math.cos(((2 * x + 1) * u * Math.PI) / (2 * SIZE));
+  }
+  return { SIZE, DCTSIZE, cos };
+})();
 
 /* ── STATE ── */
 const S = {
-  library: new Map(),
-  queryFile: null, queryBlob: null, queryHash: null,
+  library: new Map(),         // filename → { blob, hash, src? }
+  queryFile: null, queryBlob: null, queryHash: null, querySrc: null,
   targetId: '',
   threshold: 70,
   currentMatches: [], selectedMatches: [],
@@ -1066,21 +1363,36 @@ async function restoreLibraryFromDB() {
   setStatus('loading');
   const fill = document.getElementById('progressFill');
   const label = document.getElementById('progressLabel');
-  for (let i = 0; i < records.length; i++) {
-    const r = records[i];
-    if (!r.hash || !r.blob) continue;
-    const blob = r.blob instanceof Blob ? r.blob : new Blob([r.blob], { type: r.mimeType || 'image/jpeg' });
-    S.library.set(r.filename, { blob, hash: r.hash });
-    addThumb(r.filename, blob);
-    if (fill) fill.style.width = (((i + 1) / records.length) * 100) + '%';
-    if (label) label.textContent = `Restoring ${i + 1} / ${records.length}`;
+
+  /* FIX: Process in batches of 30 and yield to the browser between each batch.
+     Previously fired N simultaneous FileReaders → browser choked.
+     Now: synchronous URL.createObjectURL per item + periodic yield. */
+  const BATCH = 30;
+  let added = 0;
+  for (let i = 0; i < records.length; i += BATCH) {
+    const batch = records.slice(i, i + BATCH);
+    for (const r of batch) {
+      if (!r.hash || !r.blob) continue;
+      const blob = r.blob instanceof Blob ? r.blob : new Blob([r.blob], { type: r.mimeType || 'image/jpeg' });
+      S.library.set(r.filename, { blob, hash: r.hash });
+      addThumb(r.filename, blob);
+      added++;
+    }
+    const pct = Math.min(i + BATCH, records.length);
+    if (fill) fill.style.width = ((pct / records.length) * 100) + '%';
+    if (label) label.textContent = `Restoring ${pct} / ${records.length}`;
+    updateLibBadge();
+    await yieldFrame(); // FIX: let browser paint between batches
   }
+
   if (fill) fill.style.width = '0%';
   if (label) label.textContent = '';
-  updateLibBadge();
   setStatus('idle');
-  if (records.length > 0) toast(`Restored ${records.length} images from last session`, 'success');
+  if (added > 0) toast(`Restored ${added} images from last session`, 'success');
 }
+
+/* ── YIELD HELPER ── */
+const yieldFrame = () => new Promise(r => setTimeout(r, 0));
 
 /* ── EVENTS ── */
 function setupEvents() {
@@ -1137,7 +1449,12 @@ async function handleLibUpload(files) {
 
   for (let i = 0; i < toAdd.length; i++) {
     const f = toAdd[i];
-    const blob = new Blob([await f.arrayBuffer()], { type: f.type });
+
+    /* FIX: File IS already a Blob — no need to read arrayBuffer and re-wrap.
+       Old code: new Blob([await f.arrayBuffer()], { type: f.type })
+       That read the whole file into RAM just to make a copy. Eliminated. */
+    const blob = f;
+
     const hash = await computeHash(blob);
     let name = f.name, c = 1;
     while (S.library.has(name)) {
@@ -1146,15 +1463,20 @@ async function handleLibUpload(files) {
       name = `${base}_dup${c++}.${ext}`;
     }
     S.library.set(name, { blob, hash });
+    /* Save blob to IDB. For File objects, IDB stores them natively as Blobs. */
     await dbSave(name, { blob, hash, mimeType: f.type });
     fill.style.width = (((i + 1) / toAdd.length) * 100) + '%';
     label.textContent = `Loading ${i + 1} / ${toAdd.length}`;
     addThumb(name, blob);
     updateLibBadge();
+
+    /* FIX: yield every 10 files so the progress bar actually updates visibly */
+    if (i % 10 === 9) await yieldFrame();
   }
   fill.style.width = '0%'; label.textContent = '';
   document.getElementById('findBtn').disabled = false;
   setStatus('idle');
+  updateBatchBtn();
   toast(`Added ${toAdd.length} image${toAdd.length !== 1 ? 's' : ''} to library`, 'success');
 }
 
@@ -1164,6 +1486,10 @@ function updateLibBadge() {
 
 async function clearLibrary() {
   confirmDialog('Clear all library images? This cannot be undone.', async () => {
+    /* FIX: Revoke all cached object URLs to free memory */
+    for (const [, entry] of S.library) {
+      if (entry.src) URL.revokeObjectURL(entry.src);
+    }
     await dbClear();
     S.library.clear();
     document.getElementById('thumbGrid').innerHTML = '';
@@ -1172,23 +1498,27 @@ async function clearLibrary() {
   });
 }
 
+/* FIX: addThumb now uses URL.createObjectURL (synchronous, instant) instead of
+   FileReader.readAsDataURL (async, slow, base64 encoding overhead).
+   Object URL is also stored on the library entry for later reuse. */
 function addThumb(name, blob) {
-  const r = new FileReader();
-  r.onload = e => {
-    const src = e.target.result;
-    if (S.library.has(name)) S.library.get(name).src = src;
-    const d = document.createElement('div');
-    d.className = 'thumb'; d.dataset.name = name;
-    d.innerHTML = `<img src="${src}" alt="${name}" title="${name}">
-      <div class="thumb-del" title="Remove" onclick="removeThumb(event,'${CSS.escape(name)}')">✕</div>`;
-    d.querySelector('img').addEventListener('click', () => openLightboxFor(name, src));
-    document.getElementById('thumbGrid').appendChild(d);
-  };
-  r.readAsDataURL(blob);
+  const src = getSrc({ blob, name });
+  const entry = S.library.get(name);
+  if (entry) entry.src = src;
+
+  const d = document.createElement('div');
+  d.className = 'thumb'; d.dataset.name = name;
+  d.innerHTML = `<img src="${src}" loading="lazy" alt="${name}" title="${name}">
+    <div class="thumb-del" title="Remove" onclick="removeThumb(event,'${CSS.escape(name)}')">✕</div>`;
+  d.querySelector('img').addEventListener('click', () => openLightboxFor(name, src));
+  document.getElementById('thumbGrid').appendChild(d);
 }
 
 async function removeThumb(e, name) {
   e.stopPropagation();
+  const entry = S.library.get(name);
+  /* FIX: revoke the object URL when removing to prevent memory leak */
+  if (entry?.src) URL.revokeObjectURL(entry.src);
   S.library.delete(name);
   await dbDelete(name);
   const el = document.querySelector(`.thumb[data-name="${CSS.escape(name)}"]`);
@@ -1197,12 +1527,27 @@ async function removeThumb(e, name) {
   toast(`Removed "${name}"`, 'info');
 }
 
+/* ── getSrc: memoized object URL per library entry ──
+   FIX: Instead of calling blobToSrc(blob, cb) every time a match image needs
+   displaying (which created a fresh FileReader each time), this caches the
+   object URL on the entry. Same blob → same URL, zero extra overhead. */
+function getSrc(entryOrBlob) {
+  if (entryOrBlob instanceof Blob) {
+    return URL.createObjectURL(entryOrBlob);
+  }
+  if (!entryOrBlob.src) {
+    entryOrBlob.src = URL.createObjectURL(entryOrBlob.blob);
+  }
+  return entryOrBlob.src;
+}
+
 /* ── QUERY QUEUE ── */
 async function handleQueryAdd(files) {
   const valid = Array.from(files).filter(isImage);
   if (!valid.length) { toast('Invalid image file.', 'error'); return; }
   for (const f of valid) {
-    const blob = new Blob([await f.arrayBuffer()], { type: f.type });
+    /* FIX: Use File directly (File extends Blob) — no arrayBuffer copy */
+    const blob = f;
     const hash = await computeHash(blob);
     S.queue.push({ file: f, blob, hash });
   }
@@ -1215,33 +1560,33 @@ async function handleQueryAdd(files) {
 }
 
 function showQueryPreview(q) {
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = document.getElementById('queryPreviewImg');
-    img.src = ev.target.result;
-    document.getElementById('queryDropWrap').classList.add('hidden');
-    document.getElementById('queryImgWrap').classList.remove('hidden');
-    document.getElementById('queryMeta').style.display = '';
-    document.getElementById('queryFilenameDisplay').textContent = q.file.name;
-    document.getElementById('querySizeDisplay').textContent = fmtSize(q.file.size);
-    document.getElementById('queryHashDisplay').textContent = q.hash ? q.hash.substring(0, 32) + '…' : '—';
-  };
-  reader.readAsDataURL(q.blob);
+  /* FIX: URL.createObjectURL instead of FileReader.readAsDataURL */
+  if (S.querySrc) URL.revokeObjectURL(S.querySrc);
+  S.querySrc = URL.createObjectURL(q.blob);
+  const img = document.getElementById('queryPreviewImg');
+  img.src = S.querySrc;
+  document.getElementById('queryDropWrap').classList.add('hidden');
+  document.getElementById('queryImgWrap').classList.remove('hidden');
+  document.getElementById('queryMeta').style.display = '';
+  document.getElementById('queryFilenameDisplay').textContent = q.file.name;
+  document.getElementById('querySizeDisplay').textContent = fmtSize(q.file.size);
+  document.getElementById('queryHashDisplay').textContent = q.hash ? q.hash.substring(0, 32) + '…' : '—';
 }
 
 function renderQueue() {
   const wrap = document.getElementById('queueSection');
   const list = document.getElementById('queueList');
   const cnt = document.getElementById('queueCount');
-  if (S.queue.length === 0) { wrap.classList.add('hidden'); return; }
+  if (S.queue.length === 0) { wrap.classList.add('hidden'); updateBatchBtn(); return; }
   wrap.classList.remove('hidden');
   cnt.textContent = S.queue.length;
   list.innerHTML = '';
   S.queue.forEach((q, i) => {
     const li = document.createElement('div');
     li.className = 'queue-item';
+    /* FIX: createObjectURL is sync and instant here */
     const src = URL.createObjectURL(q.blob);
-    li.innerHTML = `<img class="queue-item-img" src="${src}">
+    li.innerHTML = `<img class="queue-item-img" src="${src}" loading="lazy">
       <span class="queue-item-name">${q.file.name}</span>
       <span id="qs-${i}"><span class="badge badge-medium" style="font-size:9px">Pending</span></span>
       <button class="btn-icon" style="padding:3px" onclick="removeFromQueue(${i})" title="Remove">
@@ -1251,6 +1596,7 @@ function renderQueue() {
       </button>`;
     list.appendChild(li);
   });
+  updateBatchBtn();
 }
 
 function removeFromQueue(i) {
@@ -1259,6 +1605,7 @@ function removeFromQueue(i) {
     document.getElementById('queryDropWrap').classList.remove('hidden');
     document.getElementById('queryImgWrap').classList.add('hidden');
     document.getElementById('queryMeta').style.display = 'none';
+    if (S.querySrc) { URL.revokeObjectURL(S.querySrc); S.querySrc = null; }
     S.queryFile = null; S.queryBlob = null; S.queryHash = null;
   } else {
     const q = S.queue[0];
@@ -1273,48 +1620,69 @@ function clearQueue() {
   document.getElementById('queryDropWrap').classList.remove('hidden');
   document.getElementById('queryImgWrap').classList.add('hidden');
   document.getElementById('queryMeta').style.display = 'none';
+  if (S.querySrc) { URL.revokeObjectURL(S.querySrc); S.querySrc = null; }
   S.queryFile = null; S.queryBlob = null; S.queryHash = null;
   renderQueue();
 }
 
 /* ── PHASH ── */
+/* FIX: Uses URL.createObjectURL instead of FileReader.readAsDataURL.
+   createObjectURL is synchronous and doesn't encode to base64, so image
+   loads start immediately without the FileReader pipeline delay. */
 function computeHash(blob) {
   return new Promise(res => {
-    const r = new FileReader();
-    r.onload = e => {
-      const img = new Image();
-      img.onload = () => res(pHashDCT(img));
-      img.src = e.target.result;
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url); // clean up immediately after load
+      res(pHashDCT(img));
     };
-    r.readAsDataURL(blob);
+    img.onerror = () => { URL.revokeObjectURL(url); res(''); };
+    img.src = url;
   });
 }
 
+/* FIX: Uses precomputed _PHASH.cos table — eliminates 65,536 Math.cos()
+   calls per image. Also uses Float32Array for gray pixels (faster arithmetic,
+   smaller memory footprint vs plain JS array).
+   Also restructured inner loop to avoid redundant indexing. */
 function pHashDCT(img) {
-  const SIZE = 32, DCTSIZE = 8;
+  const { SIZE, DCTSIZE, cos } = _PHASH;
   const c = document.createElement('canvas');
   c.width = c.height = SIZE;
-  const ctx = c.getContext('2d');
+  const ctx = c.getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0, SIZE, SIZE);
   const data = ctx.getImageData(0, 0, SIZE, SIZE).data;
-  const gray = [];
-  for (let i = 0; i < data.length; i += 4)
-    gray.push(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
-  const dct = [];
+
+  const gray = new Float32Array(SIZE * SIZE);
+  for (let i = 0, j = 0; i < data.length; i += 4, j++)
+    gray[j] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+
+  const dct = new Float32Array(DCTSIZE * DCTSIZE);
   for (let u = 0; u < DCTSIZE; u++) {
+    const cu = cos[u];
     for (let v = 0; v < DCTSIZE; v++) {
+      const cv = cos[v];
       let sum = 0;
-      for (let x = 0; x < SIZE; x++)
+      for (let x = 0; x < SIZE; x++) {
+        const cx = cu[x];
+        const rowBase = x * SIZE;
         for (let y = 0; y < SIZE; y++)
-          sum += gray[x * SIZE + y]
-            * Math.cos(((2 * x + 1) * u * Math.PI) / (2 * SIZE))
-            * Math.cos(((2 * y + 1) * v * Math.PI) / (2 * SIZE));
-      dct.push(sum);
+          sum += gray[rowBase + y] * cx * cv[y];
+      }
+      dct[u * DCTSIZE + v] = sum;
     }
   }
-  const vals = dct.slice(1);
-  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
-  return vals.map(v => (v > avg ? 1 : 0)).join('');
+
+  // Skip DC coefficient (index 0)
+  const vals = dct.subarray(1);
+  let avg = 0;
+  for (let i = 0; i < vals.length; i++) avg += vals[i];
+  avg /= vals.length;
+
+  let hash = '';
+  for (let i = 0; i < vals.length; i++) hash += vals[i] > avg ? '1' : '0';
+  return hash;
 }
 
 function similarity(h1, h2) {
@@ -1328,6 +1696,8 @@ function similarity(h1, h2) {
 }
 
 /* ── FIND ── */
+/* FIX: Chunked loop with yield every 100 items prevents main thread freeze
+   on large libraries (was a solid UI hang before). */
 async function findSimilarImages() {
   const idEl = document.getElementById('targetId');
   const idErr = document.getElementById('idError');
@@ -1344,12 +1714,20 @@ async function findSimilarImages() {
   if (!S.library.size) { toast('Load images into the library first.', 'warn'); return; }
   S.targetId = tid;
   setStatus('busy');
-  await new Promise(r => setTimeout(r, 10));
+  await yieldFrame();
+
   const matches = [];
-  for (const [fn, data] of S.library.entries()) {
-    const sim = similarity(S.queryHash, data.hash);
-    if (sim >= S.threshold) matches.push({ filename: fn, similarity: sim, data });
+  const entries = [...S.library.entries()];
+  const CHUNK = 100;
+  for (let i = 0; i < entries.length; i += CHUNK) {
+    for (let j = i; j < Math.min(i + CHUNK, entries.length); j++) {
+      const [fn, data] = entries[j];
+      const sim = similarity(S.queryHash, data.hash);
+      if (sim >= S.threshold) matches.push({ filename: fn, similarity: sim, data });
+    }
+    if (i + CHUNK < entries.length) await yieldFrame(); // yield between chunks
   }
+
   matches.sort((a, b) => b.similarity - a.similarity);
   S.currentMatches = matches;
   setStatus('idle');
@@ -1384,6 +1762,9 @@ function showNoMatch() {
 }
 
 /* ── SINGLE RESULT ── */
+/* FIX: All blob-to-src conversions are now synchronous via getSrc().
+   Previously: 3 separate FileReader callbacks, each async, causing the UI
+   to render in pieces with visible lag. Now everything renders at once. */
 function showSingleResult(match) {
   document.getElementById('resultsEmpty').classList.add('hidden');
   const ext = match.filename.split('.').pop();
@@ -1391,43 +1772,44 @@ function showSingleResult(match) {
   const c = document.getElementById('resultsContainer');
   const qSrc = document.getElementById('queryPreviewImg').src;
 
-  blobToSrc(match.data.blob, mSrc => {
-    c.innerHTML = `
-      <div class="compare-panel">
-        <div class="compare-inner">
-          <div class="cmp-img-wrap">
-            <div class="cmp-label">Query</div>
-            <img src="${qSrc}" class="cmp-img" onclick="openQueryLightbox()" style="cursor:zoom-in">
-            <div class="cmp-filename">${S.queryFile ? S.queryFile.name : ''}</div>
-            <div class="cmp-size">${S.queryFile ? fmtSize(S.queryFile.size) : ''}</div>
-          </div>
-          <div class="match-results">
-            <div class="match-results-header">
-              <span class="match-results-title">Best Match</span>
-              ${scoreRing(match.similarity)}
-            </div>
-            <img src="${mSrc}" class="cmp-img" style="cursor:zoom-in;width:100%;aspect-ratio:auto;max-height:180px"
-              onclick="openInlineLightbox('${mSrc}','${match.filename}')">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-2)">${match.filename}</div>
-            <div style="font-size:10.5px;color:var(--text-3)">${fmtSize(match.data.blob.size)}</div>
-            <div class="rename-preview">
-              <span class="rename-from">${match.filename}</span>
-              <span class="rename-arrow">→</span>
-              <span class="rename-to">${newName}</span>
-            </div>
-            <button class="btn btn-success w-full" style="margin-top:10px" onclick="openSingleConfirm()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Confirm &amp; Rename
-            </button>
-          </div>
-        </div>
-      </div>`;
-    c.classList.remove('hidden');
-  });
+  /* getSrc caches the object URL on the library entry — no re-read */
+  const mSrc = getSrc(match.data);
 
-  // Populate modal too
-  blobToSrc(S.queryBlob, src => { document.getElementById('cmpQueryImg').src = src; });
-  blobToSrc(match.data.blob, src => { document.getElementById('cmpMatchImg').src = src; });
+  c.innerHTML = `
+    <div class="compare-panel">
+      <div class="compare-inner">
+        <div class="cmp-img-wrap">
+          <div class="cmp-label">Query</div>
+          <img src="${qSrc}" class="cmp-img" onclick="openQueryLightbox()" style="cursor:zoom-in">
+          <div class="cmp-filename">${S.queryFile ? S.queryFile.name : ''}</div>
+          <div class="cmp-size">${S.queryFile ? fmtSize(S.queryFile.size) : ''}</div>
+        </div>
+        <div class="match-results">
+          <div class="match-results-header">
+            <span class="match-results-title">Best Match</span>
+            ${scoreRing(match.similarity)}
+          </div>
+          <img src="${mSrc}" class="cmp-img" style="cursor:zoom-in;width:100%;aspect-ratio:auto;max-height:180px"
+            onclick="openInlineLightbox('${mSrc}','${match.filename}')">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-2)">${match.filename}</div>
+          <div style="font-size:10.5px;color:var(--text-3)">${fmtSize(match.data.blob.size)}</div>
+          <div class="rename-preview">
+            <span class="rename-from">${match.filename}</span>
+            <span class="rename-arrow">→</span>
+            <span class="rename-to">${newName}</span>
+          </div>
+          <button class="btn btn-success w-full" style="margin-top:10px" onclick="openSingleConfirm()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Confirm &amp; Rename
+          </button>
+        </div>
+      </div>
+    </div>`;
+  c.classList.remove('hidden');
+
+  /* Populate modal — reuse same srcs, no extra reads */
+  document.getElementById('cmpQueryImg').src = qSrc;
+  document.getElementById('cmpMatchImg').src = mSrc;
   document.getElementById('cmpQueryMeta').innerHTML = metaRows([['File', S.queryFile.name], ['Size', fmtSize(S.queryFile.size)]]);
   document.getElementById('cmpMatchMeta').innerHTML = metaRows([['File', match.filename], ['Size', fmtSize(match.data.blob.size)], ['Score', `<span class="badge badge-${simClass(match.similarity)}">${match.similarity}%</span>`]]);
   document.getElementById('singleRenamePreview').innerHTML = `
@@ -1447,71 +1829,69 @@ function confirmSingle() {
 function metaRows(pairs) { return pairs.map(([k, v]) => `<div class="cmp-meta-row"><span>${k}</span><span>${v}</span></div>`).join(''); }
 
 /* ── MULTI RESULT ── */
+/* FIX: Old code ran blobToSrc (FileReader) once per match for the inline panel,
+   then AGAIN for the modal grid — double the async FileReader overhead.
+   Now getSrc() is synchronous and memoized: first call creates the object URL
+   and caches it; second call returns the cached URL instantly. Zero duplicate reads. */
 function showMultiResult(matches) {
   document.getElementById('resultsEmpty').classList.add('hidden');
   const c = document.getElementById('resultsContainer');
   const qSrc = document.getElementById('queryPreviewImg').src;
-  let loaded = 0;
-  const srcs = new Array(matches.length);
 
-  matches.forEach((m, i) => {
-    blobToSrc(m.data.blob, src => {
-      srcs[i] = src; loaded++;
-      if (loaded === matches.length) {
-        const cards = srcs.map((src, i) => `
-          <div style="display:flex;flex-direction:column;gap:5px">
-            <div style="border-radius:var(--r-lg);overflow:hidden;cursor:zoom-in;border:1px solid var(--border)" onclick="openInlineLightbox('${src}','${matches[i].filename}')">
-              <img src="${src}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0 1px">
-              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1" title="${matches[i].filename}">${matches[i].filename}</span>
-              <span class="badge badge-${simClass(matches[i].similarity)}" style="font-size:9px;flex-shrink:0;margin-left:4px">${matches[i].similarity}%</span>
-            </div>
-          </div>`).join('');
-        c.innerHTML = `
-          <div class="compare-panel">
-            <div class="compare-inner">
-              <div class="cmp-img-wrap">
-                <div class="cmp-label">Query</div>
-                <img src="${qSrc}" class="cmp-img" onclick="openQueryLightbox()" style="cursor:zoom-in">
-                <div class="cmp-filename">${S.queryFile ? S.queryFile.name : ''}</div>
-                <div class="cmp-size">${S.queryFile ? fmtSize(S.queryFile.size) : ''}</div>
-              </div>
-              <div class="match-results">
-                <div class="match-results-header">
-                  <span class="match-results-title">${matches.length} Matches Found</span>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px">${cards}</div>
-                <button class="btn btn-success w-full" style="margin-top:12px" onclick="openMultiConfirm()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Select &amp; Rename…
-                </button>
-              </div>
-            </div>
-          </div>`;
-        c.classList.remove('hidden');
-      }
-    });
-  });
+  /* All srcs are now synchronous — no need to wait for N async readers */
+  const srcs = matches.map(m => getSrc(m.data));
 
-  // Populate modal grid
+  const cards = srcs.map((src, i) => `
+    <div style="display:flex;flex-direction:column;gap:5px">
+      <div style="border-radius:var(--r-lg);overflow:hidden;cursor:zoom-in;border:1px solid var(--border)" onclick="openInlineLightbox('${src}','${matches[i].filename}')">
+        <img src="${src}" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 1px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1" title="${matches[i].filename}">${matches[i].filename}</span>
+        <span class="badge badge-${simClass(matches[i].similarity)}" style="font-size:9px;flex-shrink:0;margin-left:4px">${matches[i].similarity}%</span>
+      </div>
+    </div>`).join('');
+
+  c.innerHTML = `
+    <div class="compare-panel">
+      <div class="compare-inner">
+        <div class="cmp-img-wrap">
+          <div class="cmp-label">Query</div>
+          <img src="${qSrc}" class="cmp-img" onclick="openQueryLightbox()" style="cursor:zoom-in">
+          <div class="cmp-filename">${S.queryFile ? S.queryFile.name : ''}</div>
+          <div class="cmp-size">${S.queryFile ? fmtSize(S.queryFile.size) : ''}</div>
+        </div>
+        <div class="match-results">
+          <div class="match-results-header">
+            <span class="match-results-title">${matches.length} Matches Found</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px">${cards}</div>
+          <button class="btn btn-success w-full" style="margin-top:12px" onclick="openMultiConfirm()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Select &amp; Rename…
+          </button>
+        </div>
+      </div>
+    </div>`;
+  c.classList.remove('hidden');
+
+  /* Populate modal grid — reuse cached srcs, no re-reads */
   const grid = document.getElementById('matchGrid');
   grid.innerHTML = '';
   document.getElementById('multiTitle').textContent = `${matches.length} Matches Found`;
   matches.forEach((m, i) => {
-    blobToSrc(m.data.blob, src => {
-      const card = document.createElement('div');
-      card.className = 'match-card'; card.dataset.index = i;
-      card.innerHTML = `
-        <div class="match-card-check" id="chk${i}"></div>
-        <img src="${src}" class="match-card-img" alt="${m.filename}">
-        <div class="match-card-body">
-          <div class="match-card-name" title="${m.filename}">${m.filename}</div>
-          ${scoreRing(m.similarity)}
-        </div>`;
-      card.addEventListener('click', () => card.classList.toggle('selected'));
-      grid.appendChild(card);
-    });
+    const src = srcs[i]; // already computed above, no extra work
+    const card = document.createElement('div');
+    card.className = 'match-card'; card.dataset.index = i;
+    card.innerHTML = `
+      <div class="match-card-check" id="chk${i}"></div>
+      <img src="${src}" loading="lazy" class="match-card-img" alt="${m.filename}">
+      <div class="match-card-body">
+        <div class="match-card-name" title="${m.filename}">${m.filename}</div>
+        ${scoreRing(m.similarity)}
+      </div>`;
+    card.addEventListener('click', () => card.classList.toggle('selected'));
+    grid.appendChild(card);
   });
 }
 
@@ -1646,6 +2026,7 @@ async function saveFilesToFolder() {
       document.getElementById('queryDropWrap').classList.remove('hidden');
       document.getElementById('queryImgWrap').classList.add('hidden');
       document.getElementById('queryMeta').style.display = 'none';
+      if (S.querySrc) { URL.revokeObjectURL(S.querySrc); S.querySrc = null; }
       S.queryFile = null; S.queryBlob = null; S.queryHash = null;
     }
     setTimeout(closeFolder, 700);
@@ -1792,11 +2173,6 @@ function scoreRing(score) {
 function isImage(f) {
   return ['image/jpeg','image/png','image/gif','image/webp','image/bmp','image/avif','image/tiff'].includes(f.type);
 }
-function blobToSrc(blob, cb) {
-  const r = new FileReader();
-  r.onload = e => cb(e.target.result);
-  r.readAsDataURL(blob);
-}
 function simClass(s) { return s >= 90 ? 'high' : s >= 70 ? 'medium' : 'low'; }
 function fmtSize(b) {
   if (!b) return '0 B';
@@ -1806,6 +2182,368 @@ function fmtSize(b) {
 }
 function sanitizeId(str) { return str.replace(/[^a-zA-Z0-9]/g, '_'); }
 function truncate(s, n) { return s.length > n ? s.slice(0, n) + '…' : s; }
+
+/* ════════════════════════════════════════════
+   BATCH SEARCH
+════════════════════════════════════════════ */
+
+/* State for batch */
+const B = {
+  results: [],       // [{queryItem, match|null, newName, include}]
+  folderHandle: null,
+  filter: 'all',     // 'all' | 'matched' | 'none'
+};
+
+/* Called by renderQueue — updates batch button state */
+function updateBatchBtn() {
+  const btn = document.getElementById('batchBtn');
+  const badge = document.getElementById('batchCountBadge');
+  const hasLib = S.library.size > 0;
+  const count = S.queue.length;
+  if (count >= 1 && hasLib) {
+    btn.disabled = false;
+    btn.classList.add('active');
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    btn.disabled = true;
+    btn.classList.remove('active');
+    badge.classList.add('hidden');
+  }
+}
+
+/* ── MAIN BATCH RUNNER ── */
+async function runBatchSearch() {
+  const tid = document.getElementById('targetId').value.trim();
+  const idErr = document.getElementById('idError');
+  idErr.classList.add('hidden');
+  if (!tid) {
+    idErr.textContent = 'Target ID is required for batch naming.';
+    idErr.classList.remove('hidden'); return;
+  }
+  if (!S.queue.length) { toast('Add query images to the queue first.', 'warn'); return; }
+  if (!S.library.size) { toast('Load images into the library first.', 'warn'); return; }
+
+  S.targetId = tid;
+  B.results = [];
+  B.filter = 'all';
+
+  // Open the overlay immediately so user sees progress
+  document.getElementById('batchOverlay').classList.add('active');
+  document.getElementById('batchProgressWrap').style.display = '';
+  document.getElementById('batchTableBody').innerHTML = '';
+  document.getElementById('batchSaveBtn').disabled = true;
+  setStatus('busy');
+
+  const fill = document.getElementById('batchProgressFill');
+  const lbl = document.getElementById('batchProgressLbl');
+  const total = S.queue.length;
+
+  // Auto-generate IDs: parse base + number from tid, increment per item
+  function makeId(index) {
+    const m = tid.match(/^(.*?)(\d+)$/);
+    if (m) {
+      const num = +m[2] + index;
+      const padded = String(num).padStart(m[2].length, '0');
+      return m[1] + padded;
+    }
+    return index === 0 ? tid : `${tid}_${String(index + 1).padStart(3, '0')}`;
+  }
+
+  const libEntries = [...S.library.entries()];
+
+  for (let i = 0; i < S.queue.length; i++) {
+    const qItem = S.queue[i];
+    fill.style.width = ((i / total) * 100) + '%';
+    lbl.textContent = `Processing ${i + 1} / ${total} — ${qItem.file.name}`;
+
+    // Run similarity for this query
+    let bestMatch = null;
+    const CHUNK = 100;
+    for (let j = 0; j < libEntries.length; j += CHUNK) {
+      for (let k = j; k < Math.min(j + CHUNK, libEntries.length); k++) {
+        const [fn, data] = libEntries[k];
+        const sim = similarity(qItem.hash, data.hash);
+        if (sim >= S.threshold && (!bestMatch || sim > bestMatch.similarity)) {
+          bestMatch = { filename: fn, similarity: sim, data };
+        }
+      }
+      if (j + CHUNK < libEntries.length) await yieldFrame();
+    }
+
+    const autoId = makeId(i);
+    const ext = bestMatch ? bestMatch.filename.split('.').pop() : (qItem.file.name.split('.').pop());
+    B.results.push({
+      queryItem: qItem,
+      match: bestMatch,
+      newName: `${autoId}.${ext}`,
+      include: !!bestMatch,  // auto-check if matched
+    });
+
+    // Append row immediately as each result comes in
+    appendBatchRow(B.results.length - 1);
+    updateBatchStats();
+    await yieldFrame();
+  }
+
+  fill.style.width = '100%';
+  lbl.textContent = `Done — ${B.results.filter(r => r.match).length} of ${total} matched`;
+  setTimeout(() => { document.getElementById('batchProgressWrap').style.display = 'none'; }, 1500);
+
+  setStatus('idle');
+  updateBatchStats();
+  updateBatchSaveBtn();
+}
+
+/* ── APPEND A SINGLE BATCH ROW ── */
+function appendBatchRow(idx) {
+  const r = B.results[idx];
+  const tbody = document.getElementById('batchTableBody');
+
+  const qSrc = URL.createObjectURL(r.queryItem.blob);
+  const mSrc = r.match ? getSrc(r.match.data) : null;
+
+  const tr = document.createElement('tr');
+  tr.className = 'batch-row' + (r.match ? '' : ' no-match') + (r.include ? ' selected' : '');
+  tr.dataset.idx = idx;
+
+  // Filter visibility
+  if (B.filter === 'matched' && !r.match) tr.style.display = 'none';
+  if (B.filter === 'none' && r.match) tr.style.display = 'none';
+
+  tr.innerHTML = `
+    <td>
+      <input type="checkbox" class="batch-cb" data-idx="${idx}" ${r.include ? 'checked' : ''} ${!r.match ? 'disabled' : ''}
+        onchange="toggleBatchRow(${idx}, this.checked)">
+    </td>
+    <td>
+      <div class="batch-thumb-cell">
+        <img src="${qSrc}" class="batch-thumb" title="${r.queryItem.file.name}"
+          onclick="openInlineLightbox('${qSrc}','${r.queryItem.file.name}')">
+        <span class="batch-fname" title="${r.queryItem.file.name}">${r.queryItem.file.name}</span>
+      </div>
+    </td>
+    <td><span class="batch-arrow">→</span></td>
+    <td>
+      ${r.match
+        ? `<div class="batch-thumb-cell">
+             <img src="${mSrc}" class="batch-thumb" title="${r.match.filename}"
+               onclick="openInlineLightbox('${mSrc}','${r.match.filename}')">
+             <span class="batch-fname" title="${r.match.filename}">${r.match.filename}</span>
+           </div>`
+        : `<span class="batch-no-match-tag">No match above ${S.threshold}%</span>`
+      }
+    </td>
+    <td>
+      ${r.match ? scoreRing(r.match.similarity) : '—'}
+    </td>
+    <td>
+      <input type="text" class="batch-id-input" data-idx="${idx}"
+        value="${r.newName}" ${!r.match ? 'disabled' : ''}
+        onchange="updateBatchName(${idx}, this.value)"
+        title="Output filename">
+    </td>
+    <td>
+      <div class="batch-status-icon" id="batchRowStatus-${idx}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        <span style="color:var(--text-3);font-size:10px">${r.match ? 'ready' : 'skipped'}</span>
+      </div>
+    </td>`;
+  tbody.appendChild(tr);
+}
+
+/* ── ROW INTERACTIONS ── */
+function toggleBatchRow(idx, checked) {
+  B.results[idx].include = checked;
+  const tr = document.querySelector(`.batch-row[data-idx="${idx}"]`);
+  if (tr) tr.classList.toggle('selected', checked);
+  updateBatchStats();
+  updateBatchSaveBtn();
+}
+
+function updateBatchName(idx, val) {
+  B.results[idx].newName = val.trim() || B.results[idx].newName;
+}
+
+function toggleBatchSelectAll(checked) {
+  B.results.forEach((r, i) => {
+    if (!r.match) return;
+    r.include = checked;
+    const cb = document.querySelector(`.batch-cb[data-idx="${i}"]`);
+    if (cb) cb.checked = checked;
+    const tr = document.querySelector(`.batch-row[data-idx="${i}"]`);
+    if (tr) tr.classList.toggle('selected', checked);
+  });
+  updateBatchStats();
+  updateBatchSaveBtn();
+}
+
+function setBatchFilter(mode) {
+  B.filter = mode;
+  ['bfAll','bfMatched','bfNone'].forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById(mode === 'all' ? 'bfAll' : mode === 'matched' ? 'bfMatched' : 'bfNone').classList.add('active');
+  document.querySelectorAll('.batch-row').forEach(tr => {
+    const idx = +tr.dataset.idx;
+    const r = B.results[idx];
+    if (!r) return;
+    if (mode === 'matched' && !r.match) tr.style.display = 'none';
+    else if (mode === 'none' && r.match) tr.style.display = 'none';
+    else tr.style.display = '';
+  });
+}
+
+function updateBatchStats() {
+  const total = B.results.length;
+  const matched = B.results.filter(r => r.match).length;
+  const none = total - matched;
+  const selected = B.results.filter(r => r.include).length;
+  document.getElementById('bsTotal').textContent = total;
+  document.getElementById('bsMatched').textContent = matched;
+  document.getElementById('bsNone').textContent = none;
+  document.getElementById('bsSelected').textContent = selected;
+}
+
+function updateBatchSaveBtn() {
+  const sel = B.results.filter(r => r.include).length;
+  const btn = document.getElementById('batchSaveBtn');
+  const cnt = document.getElementById('batchSaveCount');
+  btn.disabled = sel === 0;
+  cnt.textContent = sel;
+  sel > 0 ? cnt.classList.remove('hidden') : cnt.classList.add('hidden');
+  document.getElementById('batchFootNote').textContent =
+    sel > 0 ? `${sel} file${sel !== 1 ? 's' : ''} selected for saving` : 'Select rows and pick a folder to save.';
+}
+
+function closeBatch() {
+  document.getElementById('batchOverlay').classList.remove('active');
+}
+
+/* ── BATCH FOLDER + SAVE ── */
+function openBatchFolderModal() {
+  if (!window.showDirectoryPicker)
+    document.getElementById('batchFsWarn').classList.remove('hidden');
+  if (B.folderHandle) setBatchFolderSelected(B.folderHandle.name);
+  document.getElementById('batchSaveProgress').classList.add('hidden');
+  document.getElementById('batchFolderSaveBtn').disabled = !B.folderHandle && !!window.showDirectoryPicker;
+  if (!window.showDirectoryPicker) {
+    // No FS API — can save without a folder pick
+    setBatchFolderSelected('Downloads (fallback)');
+  }
+  document.getElementById('modalBatchFolder').classList.add('active');
+}
+
+function closeBatchFolder() {
+  document.getElementById('modalBatchFolder').classList.remove('active');
+}
+
+async function pickBatchFolder() {
+  if (!window.showDirectoryPicker) return;
+  try {
+    const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    B.folderHandle = handle;
+    setBatchFolderSelected(handle.name);
+  } catch(e) { if (e.name !== 'AbortError') console.error(e); }
+}
+
+function setBatchFolderSelected(name) {
+  const box = document.getElementById('batchFolderPickBox');
+  const icon = document.getElementById('batchFolderPickIcon');
+  box.classList.add('selected');
+  icon.classList.add('folder-selected-icon');
+  icon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
+  document.getElementById('batchFolderPickName').textContent = name;
+  document.getElementById('batchFolderPickSub').textContent = 'Folder selected — ready to save';
+  document.getElementById('batchFolderSaveBtn').disabled = false;
+}
+
+async function executeBatchSave() {
+  const toSave = B.results.filter(r => r.include && r.match);
+  if (!toSave.length) { toast('Nothing selected.', 'warn'); return; }
+
+  document.getElementById('batchFolderSaveBtn').disabled = true;
+  const saveProg = document.getElementById('batchSaveProgress');
+  const saveFill = document.getElementById('batchSaveFill');
+  const saveLbl = document.getElementById('batchSaveLbl');
+  saveProg.classList.remove('hidden');
+
+  let saved = 0, errors = 0;
+
+  for (let i = 0; i < toSave.length; i++) {
+    const item = toSave[i];
+    saveFill.style.width = ((i / toSave.length) * 100) + '%';
+    saveLbl.textContent = `Saving ${i + 1} / ${toSave.length} — ${item.newName}`;
+
+    // Update row status to "saving"
+    const statusCell = document.getElementById(`batchRowStatus-${B.results.indexOf(item)}`);
+
+    try {
+      if (B.folderHandle) {
+        const fh = await B.folderHandle.getFileHandle(item.newName, { create: true });
+        const ws = await fh.createWritable();
+        await ws.write(item.match.data.blob);
+        await ws.close();
+      } else {
+        const url = URL.createObjectURL(item.match.data.blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = item.newName;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      if (statusCell) statusCell.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span style="color:var(--success);font-size:10px">saved</span>`;
+
+      S.sessionLog.push({
+        time: new Date().toLocaleTimeString(),
+        query: item.queryItem.file.name,
+        matched: item.match.filename,
+        saved: item.newName,
+        folder: B.folderHandle ? B.folderHandle.name : 'Downloads',
+        status: 'success',
+      });
+      saved++;
+    } catch(e) {
+      if (statusCell) statusCell.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <span style="color:var(--danger);font-size:10px">error</span>`;
+      S.sessionLog.push({
+        time: new Date().toLocaleTimeString(),
+        query: item.queryItem.file.name,
+        matched: item.match.filename,
+        saved: item.newName, folder: '—', status: 'error',
+      });
+      errors++;
+    }
+    await yieldFrame();
+  }
+
+  saveFill.style.width = '100%';
+  saveLbl.textContent = `Done — ${saved} saved${errors ? `, ${errors} errors` : ''}`;
+  updateLog(); updateLogBadge();
+  setStatus('ok');
+  toast(`Batch save complete — ${saved} file${saved !== 1 ? 's' : ''} saved`, 'success');
+  document.getElementById('batchFolderSaveBtn').disabled = false;
+  setTimeout(closeBatchFolder, 800);
+}
+
+/* ── BATCH CSV EXPORT ── */
+function exportBatchCSV() {
+  if (!B.results.length) { toast('No batch results yet.', 'warn'); return; }
+  let csv = 'Query,Best Match,Similarity,Output Name,Included\n';
+  B.results.forEach(r => {
+    csv += `"${r.queryItem.file.name}","${r.match ? r.match.filename : '—'}","${r.match ? r.match.similarity + '%' : '—'}","${r.newName}","${r.include ? 'yes' : 'no'}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `batch_${Date.now()}.csv`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('Batch CSV exported', 'success');
+}
 
 window.addEventListener('DOMContentLoaded', () => {
   init();
