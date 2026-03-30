@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImageSync — Similarity Matcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+    </div>
+    ImageSync
+  </div>
+  <span class="topbar-tag">Similarity Matcher</span>
+  <div class="topbar-right">
+    <div class="status-pill idle" id="statusPill">
+      <div class="dot"></div>
+      <span id="statusText">Idle</span>
+    </div>
+    <div class="v-sep"></div>
+    <button class="btn btn-ghost btn-sm" onclick="openLog()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      Log
+      <span id="logCountBadge" class="hidden" style="background:var(--accent);color:#000;border-radius:var(--r-pill);font-size:10px;padding:1px 6px;font-weight:700"></span>
+    </button>
+    <div class="v-sep"></div>
+    <div class="theme-btn" onclick="toggleTheme()" id="themeBtn">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <span id="themeLabel">Dark</span>
+    </div>
+    <button class="btn-icon" onclick="toggleSidebar()" title="Toggle library panel">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/>
+      </svg>
+    </button>
+  </div>
+</header>
+<div class="workspace">
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-heading-txt">
+        <span class="sidebar-title">Library</span>
+        <span class="sidebar-badge" id="libraryBadge">0 / 1000</span>
+      </div>
+      <button class="btn-icon btn-xs" onclick="clearLibrary()" title="Clear all">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sidebar-body">
+      <div class="lib-actions">
+        <button class="btn btn-ghost btn-sm" style="flex:1;justify-content:center" onclick="document.getElementById('libFileInput').click()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span>Files</span>
+        </button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;justify-content:center" onclick="document.getElementById('libFolderInput').click()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+          </svg>
+          <span>Folder</span>
+        </button>
+      </div>
+
+      <div class="lib-drop-wrap">
+        <div class="drop-zone" id="libDropZone">
+          <div class="dz-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="dz-label">Drop images</div>
+          <div class="dz-sub">or use buttons above</div>
+        </div>
+        <input type="file" id="libFileInput" multiple accept="image/*" style="display:none">
+        <input type="file" id="libFolderInput" multiple accept="image/*" webkitdirectory style="display:none">
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-label" id="progressLabel"></div>
+      </div>
+
+      <div class="thumb-grid" id="thumbGrid"></div>
+    </div>
+  </aside>
+<main class="main">
+    <div class="main-body">
+<div class="section-label">Query Image</div>
+      <div class="query-row">
+        <div class="query-drop-wrap" id="queryDropWrap">
+          <div class="drop-zone" id="queryDropZone" style="padding:20px 10px">
+            <div class="dz-icon">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+            <div class="dz-label" style="font-size:11px">Drop image</div>
+            <div class="dz-sub">or click</div>
+          </div>
+          <input type="file" id="queryFileInput" accept="image/*" multiple style="display:none">
+        </div>
+        <div class="query-img-wrap hidden" id="queryImgWrap">
+          <img id="queryPreviewImg" alt="Query" onclick="openQueryLightbox()">
+          <div class="query-drop-replace" onclick="document.getElementById('queryFileInput').click()">Change image</div>
+        </div>
+        <div class="query-meta" id="queryMeta" style="display:none">
+          <div class="query-filename" id="queryFilenameDisplay">—</div>
+          <div class="query-size" id="querySizeDisplay">—</div>
+          <div style="font-size:10px;color:var(--text-3);margin-bottom:8px">
+            <span style="font-family:'JetBrains Mono',monospace" id="queryHashDisplay">—</span>
+          </div>
+        </div>
+      </div>
+<div id="queueSection" class="queue-section hidden">
+        <div class="queue-head">
+          <span class="queue-count-lbl">Queue — <span id="queueCount">0</span></span>
+          <button class="btn btn-ghost btn-xs" onclick="clearQueue()">Clear all</button>
+        </div>
+        <div class="queue-list" id="queueList"></div>
+      </div>
+<div class="controls-row">
+        <div class="ctrl-card">
+          <label class="field-label">Target ID</label>
+          <div class="id-row">
+            <input type="text" id="targetId" placeholder="e.g. PRODUCT_001" maxlength="120">
+            <button class="btn btn-ghost btn-sm" onclick="autoIncrementId()" title="Auto-increment">+1</button>
+          </div>
+          <div class="field-error hidden" id="idError"></div>
+          <div class="field-hint">Matched file will be renamed to this ID</div>
+        </div>
+        <div class="ctrl-card">
+          <label class="field-label">Similarity Threshold</label>
+          <div class="slider-row">
+            <input type="range" id="threshSlider" min="0" max="100" value="70">
+            <span class="slider-val" id="threshVal">70%</span>
+          </div>
+          <div class="field-hint" style="margin-top:8px">Lower = more permissive matching</div>
+        </div>
+      </div>
+<div class="find-action">
+        <div class="find-action-row">
+          <button class="btn btn-primary find-btn" id="findBtn" onclick="findSimilarImages()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Find Similar
+          </button>
+          <button class="batch-run-btn" id="batchBtn" onclick="runBatchSearch()" disabled title="Add multiple query images to enable batch mode">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            Run Batch
+            <span id="batchCountBadge" class="hidden" style="background:var(--accent);color:#000;border-radius:var(--r-pill);font-size:10px;padding:1px 7px;font-weight:800;margin-left:2px"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+<div id="resultsEmpty">
+        <div class="results-empty">
+          <div class="results-empty-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <p>Load a library, drop a query image, and run a search</p>
+          <div class="hint-row">
+            <span class="kbd">Enter</span>
+            <span style="font-size:11px;color:var(--text-3)">to confirm matches</span>
+          </div>
+        </div>
+      </div>
+      <div id="resultsContainer" class="hidden"></div>
+
+    </div>
+  </main>
+</div>
+<div class="log-backdrop" id="logBackdrop" onclick="closeLog()"></div>
+<div class="log-drawer" id="logDrawer">
+  <div class="log-drawer-head">
+    <span class="log-drawer-title">Session Log</span>
+    <div class="log-drawer-actions">
+      <button class="btn btn-ghost btn-xs" onclick="exportCSV()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export CSV
+      </button>
+      <button class="btn-icon" onclick="clearLog()" title="Clear log">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+        </svg>
+      </button>
+      <button class="btn-icon" onclick="closeLog()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="log-drawer-body">
+    <div id="logEmpty" class="log-empty">
+      <div class="log-empty-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+      </div>
+      No renames logged yet.<br>Complete a save operation to see entries here.
+    </div>
+    <table class="log-table hidden" id="logTable">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Query</th>
+          <th>Matched</th>
+          <th>Saved As</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="logBody"></tbody>
+    </table>
+  </div>
+</div>
+<div class="overlay" id="modalSingle">
+  <div class="modal" style="width:680px">
+    <div class="modal-head">
+      <span class="modal-title">Confirm Match</span>
+      <button class="btn-icon" onclick="closeSingle()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="cmp-grid">
+        <div>
+          <div class="cmp-sec-label">Query Image</div>
+          <img id="cmpQueryImg" class="cmp-full-img" alt="">
+          <div class="cmp-meta" id="cmpQueryMeta"></div>
+        </div>
+        <div>
+          <div class="cmp-sec-label">Best Match</div>
+          <img id="cmpMatchImg" class="cmp-full-img" alt="">
+          <div class="cmp-meta" id="cmpMatchMeta"></div>
+        </div>
+      </div>
+      <div class="rename-preview" id="singleRenamePreview"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeSingle()">Skip</button>
+      <button class="btn btn-success" onclick="confirmSingle()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Confirm &amp; Rename
+      </button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="modalMulti">
+  <div class="modal" style="width:800px">
+    <div class="modal-head">
+      <span class="modal-title" id="multiTitle">Multiple Matches Found</span>
+      <button class="btn-icon" onclick="closeMulti()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="notice notice-info" style="margin-bottom:14px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Select one or more images to rename and save to your output folder.
+      </div>
+      <div id="matchGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));gap:9px"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeMulti()">Cancel</button>
+      <button class="btn btn-success" onclick="confirmMulti()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Confirm Selection
+      </button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="modalFolder">
+  <div class="modal" style="width:440px">
+    <div class="modal-head">
+      <span class="modal-title">Save Renamed Files</span>
+      <button class="btn-icon" onclick="closeFolder()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="fsBrowserWarning" class="notice notice-warn hidden">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        File System Access API not supported — files will download individually.
+      </div>
+      <label class="field-label" style="margin-bottom:10px">Output Folder</label>
+      <div class="folder-pick-box" id="folderPickBox" onclick="pickFolder()">
+        <div class="folder-pick-icon" id="folderPickIcon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+            <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+          </svg>
+        </div>
+        <div class="folder-pick-name" id="folderPickName">Select Output Folder</div>
+        <div class="folder-pick-sub" id="folderPickSub">Click to choose where renamed files will be saved</div>
+      </div>
+      <div id="saveStatusBox" class="save-status-box hidden">
+        <div class="field-label" style="margin-bottom:9px">Files to Save</div>
+        <div id="saveStatusList"></div>
+      </div>
+<div class="resize-section">
+        <label class="field-label">Output Size</label>
+        <div class="resize-opts" id="resizeOpts">
+          <div class="resize-opt active" data-mode="original" onclick="setResizeMode('original',this,'')">Original</div>
+          <div class="resize-opt" data-mode="1mb" onclick="setResizeMode('1mb',this,'')">≤ 1 MB</div>
+          <div class="resize-opt" data-mode="2mb" onclick="setResizeMode('2mb',this,'')">≤ 2 MB</div>
+          <div class="resize-opt" data-mode="3mb" onclick="setResizeMode('3mb',this,'')">≤ 3 MB</div>
+          <div class="resize-opt" data-mode="4mb" onclick="setResizeMode('4mb',this,'')">≤ 4 MB</div>
+          <div class="resize-opt" data-mode="5mb" onclick="setResizeMode('5mb',this,'')">≤ 5 MB</div>
+          <div class="resize-opt" data-mode="custom" onclick="setResizeMode('custom',this,'')">Custom…</div>
+        </div>
+        <div class="resize-custom-row hidden" id="resizeCustomRow">
+          <span style="font-size:12px;color:var(--text-2);white-space:nowrap">Max size:</span>
+          <input type="number" id="resizeCustomVal" min="0.1" max="50" step="0.1" value="2" placeholder="2">
+          <span style="font-size:12px;color:var(--text-2)">MB</span>
+        </div>
+        <div class="resize-hint" id="resizeHint">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Images will be saved at their original size and quality.
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeFolder()">Cancel</button>
+      <button class="btn btn-success" id="saveFolderBtn" onclick="saveFilesToFolder()" disabled>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Save to Folder
+      </button>
+    </div>
+  </div>
+</div>
+<div class="batch-overlay" id="batchOverlay">
+  <div class="batch-shell">
+    <div class="batch-head">
+      <div class="batch-head-left">
+        <span class="batch-head-title">Batch Search</span>
+        <div class="batch-progress-wrap" id="batchProgressWrap">
+          <div class="batch-progress-bar"><div class="batch-progress-fill" id="batchProgressFill"></div></div>
+          <div class="batch-progress-lbl" id="batchProgressLbl">Processing…</div>
+        </div>
+      </div>
+      <div class="batch-head-right">
+        <button class="btn btn-ghost btn-sm" onclick="exportBatchCSV()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export CSV
+        </button>
+        <button class="btn-icon" onclick="closeBatch()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="batch-summary-bar" id="batchSummaryBar">
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--accent)"></div>
+        <span class="batch-stat-num" id="bsTotal">0</span>
+        <span class="batch-stat-lbl">total</span>
+      </div>
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--success)"></div>
+        <span class="batch-stat-num" id="bsMatched">0</span>
+        <span class="batch-stat-lbl">matched</span>
+      </div>
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--danger)"></div>
+        <span class="batch-stat-num" id="bsNone">0</span>
+        <span class="batch-stat-lbl">no match</span>
+      </div>
+      <div class="batch-stat">
+        <div class="batch-stat-dot" style="background:var(--text-3)"></div>
+        <span class="batch-stat-num" id="bsSelected">0</span>
+        <span class="batch-stat-lbl">selected</span>
+      </div>
+    </div>
+
+    <div class="batch-controls">
+      <label class="batch-select-all">
+        <input type="checkbox" id="batchSelectAll" onchange="toggleBatchSelectAll(this.checked)">
+        Select all matched
+      </label>
+      <div class="batch-filter">
+        <button class="batch-filter-btn active" id="bfAll" onclick="setBatchFilter('all')">All</button>
+        <button class="batch-filter-btn" id="bfMatched" onclick="setBatchFilter('matched')">Matched</button>
+        <button class="batch-filter-btn" id="bfNone" onclick="setBatchFilter('none')">No Match</button>
+      </div>
+    </div>
+
+    <div class="batch-body">
+      <table class="batch-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Query Image</th>
+            <th></th>
+            <th>Best Match</th>
+            <th>Score</th>
+            <th>Output Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="batchTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="batch-foot">
+      <div class="batch-foot-left">
+        <span id="batchFootNote">Select rows and pick a folder to save.</span>
+      </div>
+      <div class="batch-foot-right">
+        <button class="btn btn-ghost" onclick="closeBatch()">Close</button>
+        <button class="btn btn-success" id="batchSaveBtn" onclick="openBatchFolderModal()" disabled>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+          </svg>
+          Save Selected
+          <span id="batchSaveCount" class="hidden" style="background:rgba(0,0,0,.2);border-radius:var(--r-pill);padding:1px 7px;font-size:11px"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="modalBatchFolder">
+  <div class="modal" style="width:440px">
+    <div class="modal-head">
+      <span class="modal-title">Save Batch Files</span>
+      <button class="btn-icon" onclick="closeBatchFolder()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="batchFsWarn" class="notice notice-warn hidden">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        File System Access API not supported — files will download individually.
+      </div>
+      <label class="field-label" style="margin-bottom:10px">Output Folder</label>
+      <div class="folder-pick-box" id="batchFolderPickBox" onclick="pickBatchFolder()">
+        <div class="folder-pick-icon" id="batchFolderPickIcon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+            <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+          </svg>
+        </div>
+        <div class="folder-pick-name" id="batchFolderPickName">Select Output Folder</div>
+        <div class="folder-pick-sub" id="batchFolderPickSub">Click to choose where renamed files will be saved</div>
+      </div>
+      <div id="batchSaveProgress" class="hidden">
+        <div class="batch-progress-bar" style="margin-bottom:6px"><div class="batch-progress-fill" id="batchSaveFill"></div></div>
+        <div class="batch-progress-lbl" id="batchSaveLbl" style="text-align:center"></div>
+      </div>
+<div class="resize-section">
+        <label class="field-label">Output Size</label>
+        <div class="resize-opts" id="batchResizeOpts">
+          <div class="resize-opt active" data-mode="original" onclick="setResizeMode('original',this,'batch')">Original</div>
+          <div class="resize-opt" data-mode="1mb" onclick="setResizeMode('1mb',this,'batch')">≤ 1 MB</div>
+          <div class="resize-opt" data-mode="2mb" onclick="setResizeMode('2mb',this,'batch')">≤ 2 MB</div>
+          <div class="resize-opt" data-mode="3mb" onclick="setResizeMode('3mb',this,'batch')">≤ 3 MB</div>
+          <div class="resize-opt" data-mode="4mb" onclick="setResizeMode('4mb',this,'batch')">≤ 4 MB</div>
+          <div class="resize-opt" data-mode="5mb" onclick="setResizeMode('5mb',this,'batch')">≤ 5 MB</div>
+          <div class="resize-opt" data-mode="custom" onclick="setResizeMode('custom',this,'batch')">Custom…</div>
+        </div>
+        <div class="resize-custom-row hidden" id="batchResizeCustomRow">
+          <span style="font-size:12px;color:var(--text-2);white-space:nowrap">Max size:</span>
+          <input type="number" id="batchResizeCustomVal" min="0.1" max="50" step="0.1" value="2" placeholder="2">
+          <span style="font-size:12px;color:var(--text-2)">MB</span>
+        </div>
+        <div class="resize-hint" id="batchResizeHint">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Images will be saved at their original size and quality.
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeBatchFolder()">Cancel</button>
+      <button class="btn btn-success" id="batchFolderSaveBtn" onclick="executeBatchSave()" disabled>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+        </svg>
+        Save All
+      </button>
+    </div>
+  </div>
+</div>
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" alt="Preview">
+  <div id="lightboxName"></div>
+</div>
+<div id="toastContainer"></div>
+<footer class="app-footer">
+  <div class="footer-left">
+    <span class="footer-copy" >&copy; 2026 <strong>Madushan Samayasivam</strong></span>
+  </div>
+  <div class="footer-right">
+    <a href="mailto:madushansivam@gmail.com" class="footer-link" title="madushansivam@gmail.com">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      madushansivam@gmail.com
+    </a>
+    <div class="footer-sep"></div>
+    <a href="https://github.com/madushansivam/" target="_blank" rel="noopener" class="footer-link">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+      </svg>
+      github.com/madushansivam
+    </a>
+    <div class="footer-sep"></div>
+    <span class="footer-version">v2.6</span>
+  </div>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
