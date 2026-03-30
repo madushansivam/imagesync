@@ -677,7 +677,11 @@ function autoIncrementId() {
 
 function openFolderModal() {
   buildSaveStatusList();
+  if (!window.showDirectoryPicker)
+    document.getElementById('fsBrowserWarning').classList.remove('hidden');
   if (S.folderHandle) setFolderSelected(S.folderHandle.name);
+  document.getElementById('saveFolderBtn').disabled = !S.folderHandle && !!window.showDirectoryPicker;
+  if (!window.showDirectoryPicker) setFolderSelected('Downloads (fallback)');
   document.getElementById('modalFolder').classList.add('active');
 }
 function closeFolder() { document.getElementById('modalFolder').classList.remove('active'); }
