@@ -689,5 +689,3 @@ input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 }
 .footer-link:hover { color: var(--accent); }
 .footer-sep { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
-.footer-built { font-size: 11px; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
-.footer-built span { color: var(--accent); font-weight: 600; }
